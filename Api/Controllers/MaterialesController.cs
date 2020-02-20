@@ -35,7 +35,7 @@ namespace Api.Controllers
         [HttpGet("{limit:int}/{offset:int}")]
         public IEnumerable<Material> GetAll(int limit, int offset)
         {
-            return _repo.GetAll().ToEnumerable(limit, offset);
+            return _repo.GetAll(limit, offset).ToEnumerable();
         }
     }
 }
