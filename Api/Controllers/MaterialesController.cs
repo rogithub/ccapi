@@ -26,7 +26,7 @@ namespace Api.Controllers
         }
 
         [HttpGet("{id:guid}")]
-        public IEnumerable<Materiales> Get(Guid id)
+        public IEnumerable<Material> Get(Guid id)
         {
             return _repo.Get(id).ToEnumerable();
         }

@@ -23,7 +23,7 @@ namespace Repositories
                     Color = dr.GetString("color"),
                     Unidad = dr.GetString("unidad"),
                     Marca = dr.GetString("marca"),
-                    Model = dr.GetString("modelo"),
+                    Modelo = dr.GetString("modelo"),
                     Comentarios = dr.GetString("comentarios"),
                     Activo = dr.GetValue<bool>("activo")
                 };
