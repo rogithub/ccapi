@@ -31,11 +31,11 @@ namespace Api.Controllers
             return _repo.Get(id).ToEnumerable();
         }
 
-        [Route("all/{limit:int}/{offset:int}")]
+        [Route("all/{limit:int}/{offset:int}/{search?}")]
         [HttpGet()]
-        public IEnumerable<Material> GetAll(int limit, int offset)
+        public IEnumerable<Material> GetAll(int limit, int offset, string search)
         {
-            return _repo.GetAll(limit, offset).ToEnumerable();
+            return _repo.GetAll(limit, offset, search).ToEnumerable();
         }
     }
 }

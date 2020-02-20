@@ -41,15 +41,22 @@ namespace Repositories
         }
 
 
-        public IObservable<Material> GetAll(int limit, int offset)
+        public IObservable<Material> GetAll(int limit, int offset, string search)
         {            
-            var parameters = new IDbDataParameter[] {
-                "@limit".ToParam(DbType.Int32, limit),
-                "@offset".ToParam(DbType.Int32, offset)
-            };
-            var cmd = @"SELECT id, guid, nombre, color, unidad, 
-            marca, modelo, comentarios, activo 
-            FROM public.materiales LIMIT @limit OFFSET @offset;".ToCmd(CommandType.Text, parameters);         
+            List<IDbDataParameter> parameters = new List<IDbDataParameter>(); 
+            parameters.Add( "@limit".ToParam(DbType.Int32, limit));
+            parameters.Add( "@limit".ToParam(DbType.Int32, limit));
+            string whereClause = "";
+            if (!string.IsNullOrWhiteSpace(search)) {
+                whereClause = "WHERE search_field @@ to_tsquery(@search)";
+                parameters.Add("@search".ToParam(DbType.String, search));
+            }              
+            var cmd = string.Format(@"
+            SELECT 
+                id, guid, nombre, color, unidad, marca, modelo, comentarios, activo 
+            FROM 
+                public.materiales {0} 
+            LIMIT @limit OFFSET @offset;", whereClause).ToCmd(CommandType.Text, parameters);         
 
             return Db.ExecuteDataReader(cmd, _getData);
         }
