@@ -31,8 +31,8 @@ namespace Api.Controllers
             return _repo.Get(id).ToEnumerable();
         }
 
-        [Route("all")]
-        [HttpGet("{limit:int}/{offset:int}")]
+        [Route("all/{limit:int}/{offset:int}")]
+        [HttpGet()]
         public IEnumerable<Material> GetAll(int limit, int offset)
         {
             return _repo.GetAll(limit, offset).ToEnumerable();
