@@ -49,7 +49,7 @@ namespace Repositories
             parameters.Add("@offset".ToParam(DbType.Int32, offset));
             string whereClause = "";
             if (!string.IsNullOrWhiteSpace(search)) {
-                whereClause = "WHERE search_field @@ to_tsquery(@search)";
+                whereClause = "WHERE search_field @@ plainto_tsquery(@search)";
                 parameters.Add("@search".ToParam(DbType.String, search));
             }              
             var cmd = string.Format(@"
