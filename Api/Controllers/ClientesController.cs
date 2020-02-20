@@ -25,8 +25,8 @@ namespace Api.Controllers
 
         }
 
-        [HttpGet("{id:int}")]
-        public IEnumerable<Cliente> Get(int id)
+        [HttpGet("{id:guid}")]
+        public IEnumerable<Cliente> Get(Guid id)
         {
             return _repo.Get(id).ToEnumerable();
         }
