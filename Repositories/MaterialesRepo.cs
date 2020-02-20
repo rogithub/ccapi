@@ -41,11 +41,15 @@ namespace Repositories
         }
 
 
-        public IObservable<Material> GetAll()
-        {
+        public IObservable<Material> GetAll(int limit, int offset)
+        {            
+            var parameters = new IDbDataParameter[] {
+                "@guid".ToParam(DbType.Guid, id),
+                "@guid".ToParam(DbType.Guid, id)
+            };
             var cmd = @"SELECT id, guid, nombre, color, unidad, 
             marca, modelo, comentarios, activo 
-            FROM public.materiales;".ToCmd();            
+            FROM public.materiales LIMIT @limit OFFSET @offset;".ToCmd(CommandType.Text, parameters);         
 
             return Db.ExecuteDataReader(cmd, _getData);
         }

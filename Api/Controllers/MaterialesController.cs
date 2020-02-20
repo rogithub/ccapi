@@ -32,10 +32,10 @@ namespace Api.Controllers
         }
 
         [Route("all")]
-        [HttpGet()]
-        public IEnumerable<Material> GetAll()
+        [HttpGet("{limit:int}/{offset:int}")]
+        public IEnumerable<Material> GetAll(int limit, int offset)
         {
-            return _repo.GetAll().ToEnumerable();
+            return _repo.GetAll().ToEnumerable(limit, offset);
         }
     }
 }
