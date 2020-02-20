@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using System.Data;
 using Entities;
 using ReactiveDb;
@@ -44,8 +45,8 @@ namespace Repositories
         public IObservable<Material> GetAll(int limit, int offset, string search)
         {            
             List<IDbDataParameter> parameters = new List<IDbDataParameter>(); 
-            parameters.Add( "@limit".ToParam(DbType.Int32, limit));
-            parameters.Add( "@limit".ToParam(DbType.Int32, limit));
+            parameters.Add("@limit".ToParam(DbType.Int32, limit));
+            parameters.Add("@offset".ToParam(DbType.Int32, offset));
             string whereClause = "";
             if (!string.IsNullOrWhiteSpace(search)) {
                 whereClause = "WHERE search_field @@ to_tsquery(@search)";
