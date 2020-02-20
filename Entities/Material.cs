@@ -10,7 +10,7 @@ namespace Entities
         public string Color { get; set; }
         public string Unidad { get; set; }
         public string Marca { get; set; }
-        public string Model { get; set; }
+        public string Modelo { get; set; }
         public string Comentarios { get; set; }
         public bool Activo { get; set; }
     }

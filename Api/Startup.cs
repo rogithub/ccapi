@@ -34,6 +34,7 @@ namespace Api
                 return new ReactiveDb.Database(connString);
             });
             services.AddTransient<IClientesRepo, ClientesRepo>();
+            services.AddTransient<IMaterialesRepo, MaterialesRepo>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
