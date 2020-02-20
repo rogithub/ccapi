@@ -1,7 +1,5 @@
-﻿using System;
-using System.Data;
+﻿using System.Data;
 using Npgsql;
-using System.Collections.Generic;
 using System.Linq;
 
 namespace ReactiveDb
