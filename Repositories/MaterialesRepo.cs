@@ -57,7 +57,7 @@ namespace Repositories
                 id, guid, nombre, color, unidad, marca, modelo, comentarios, activo 
             FROM 
                 public.materiales {0} 
-            LIMIT @limit OFFSET @offset;", whereClause).ToCmd(CommandType.Text, parameters);         
+            LIMIT @limit OFFSET @offset;", whereClause).ToCmd(CommandType.Text, parameters.ToArray());         
 
             return Db.ExecuteDataReader(cmd, _getData);
         }
