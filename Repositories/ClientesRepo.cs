@@ -17,7 +17,7 @@ namespace Repositories
             {
                 return new Cliente()
                 {
-                    Id = id,
+                    Id = dr.GetInt("id"),
                     Guid = dr.GetGuid("guid"),
                     FacturacionGuid = dr.GetGuid("facturacionid"),
                     Contacto = dr.GetString("contacto"),
