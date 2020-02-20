@@ -30,5 +30,11 @@ namespace Api.Controllers
         {
             return _repo.Get(id).ToEnumerable();
         }
+
+        [HttpGet()]
+        public IEnumerable<Material> GetAll()
+        {
+            return _repo.GetAll().ToEnumerable();
+        }
     }
 }
