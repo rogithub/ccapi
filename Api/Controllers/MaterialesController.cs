@@ -31,6 +31,7 @@ namespace Api.Controllers
             return _repo.Get(id).ToEnumerable();
         }
 
+        [Route("all")]
         [HttpGet()]
         public IEnumerable<Material> GetAll()
         {
