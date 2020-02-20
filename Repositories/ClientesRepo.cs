@@ -64,11 +64,11 @@ namespace Repositories
         public IObservable<int> Update(Cliente cliente)
 		{
             var parameters = new IDbDataParameter[] {
-                "@guid".ToParam(DbType.Guid, cliente.Guid);
-                "@contacto".ToParam(DbType.String, cliente.Contacto);
-                "@empresa".ToParam(DbType.String, cliente.Empresa);
-                "@telefono".ToParam(DbType.String, cliente.Telefono);
-                "@domicilio".ToParam(DbType.String, cliente.Domicilio);
+                "@guid".ToParam(DbType.Guid, cliente.Guid),
+                "@contacto".ToParam(DbType.String, cliente.Contacto),
+                "@empresa".ToParam(DbType.String, cliente.Empresa),
+                "@telefono".ToParam(DbType.String, cliente.Telefono),
+                "@domicilio".ToParam(DbType.String, cliente.Domicilio),
             };
 			var cmd = 
             @"UPDATE public.clientes SET 
@@ -84,14 +84,14 @@ namespace Repositories
         public IObservable<int> Save(Cliente cliente)
 		{
 			var parameters = new IDbDataParameter[] {
-                "@guid".ToParam(DbType.Guid, cliente.Guid);
-                "@facturacionid".ToParam(DbType.Guid, cliente.FacturacionGuid);
-                "@contacto".ToParam(DbType.String, cliente.Contacto);
-                "@empresa".ToParam(DbType.String, cliente.Empresa);
-                "@telefono".ToParam(DbType.String, cliente.Telefono);
-                "@domicilio".ToParam(DbType.String, cliente.Domicilio);
-                "@fechacreado".ToParam(DbType.DateTime, cliente.FechaCreado);
-                "@activo".ToParam(DbType.Boolean, cliente.Activo);
+                "@guid".ToParam(DbType.Guid, cliente.Guid),
+                "@facturacionid".ToParam(DbType.Guid, cliente.FacturacionGuid),
+                "@contacto".ToParam(DbType.String, cliente.Contacto),
+                "@empresa".ToParam(DbType.String, cliente.Empresa),
+                "@telefono".ToParam(DbType.String, cliente.Telefono),
+                "@domicilio".ToParam(DbType.String, cliente.Domicilio),
+                "@fechacreado".ToParam(DbType.DateTime, cliente.FechaCreado),
+                "@activo".ToParam(DbType.Boolean, cliente.Activo)
             };
 			var cmd = 
             @"INSERT INTO public.clientes 
