@@ -44,8 +44,8 @@ namespace Repositories
         public IObservable<Material> GetAll(int limit, int offset)
         {            
             var parameters = new IDbDataParameter[] {
-                "@guid".ToParam(DbType.Guid, id),
-                "@guid".ToParam(DbType.Guid, id)
+                "@limit".ToParam(DbType.Int32, limit),
+                "@offset".ToParam(DbType.Int32, offset)
             };
             var cmd = @"SELECT id, guid, nombre, color, unidad, 
             marca, modelo, comentarios, activo 
