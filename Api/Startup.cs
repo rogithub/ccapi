@@ -10,6 +10,7 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
+using ReactiveDb;
 
 namespace Api
 {
@@ -25,7 +26,13 @@ namespace Api
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
+            string connString = ConfigurationExtensions.GetConnectionString(this.Configuration, "Default");
             services.AddControllers();
+
+            services.AddTransient<ReactiveDb.IDatabase>((svc) =>
+            {
+                return new ReactiveDb.Database(connString);
+            });
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

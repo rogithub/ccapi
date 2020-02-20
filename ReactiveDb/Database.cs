@@ -4,7 +4,7 @@ using Npgsql;
 
 namespace ReactiveDb
 {
-    public class Database
+    public class Database : IDatabase
     {
         private string ConnectionString { get; set; }
         public Database(string connString)
