@@ -4,6 +4,7 @@ using System.Linq;
 using System.Reactive.Linq;
 using System.Threading.Tasks;
 using AutoMapper;
+using Entities;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using Repositories;
@@ -48,16 +49,21 @@ namespace Api.Controllers
 
         [Route("search/{limit:int}/{offset:int}/{search?}")]
         [HttpGet()]
-        public async Task<ActionResult<IEnumerable<Models.Material>>> Search(int limit, int offset, string search)
+        public async Task<ActionResult<Resultset<IEnumerable<Models.Material>>>> Search(int limit, int offset, string search)
         {
             var rs = _repo.GetAll(limit, offset, search).ToAsyncEnumerable();
             var list = new List<Models.Material>();
+            Int64 rowCount = 0;
+
             await foreach (var item in rs)
             {
                 list.Add(_mapper.Map<Models.Material>(item.Payload));
+                rowCount = item.TotalRows;
             }
 
-            return Ok(list);
+            var result = new Resultset<IEnumerable<Models.Material>>(rowCount, list);
+
+            return Ok(result);
         }
     }
 }
