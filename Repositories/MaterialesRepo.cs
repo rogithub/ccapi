@@ -30,9 +30,9 @@ namespace Repositories
                 };
             };
 
-        private static Func<IDataReader, (Material, Int64)> _getResultSet = (dr) =>
+        private static Func<IDataReader, Resultset<Material>> _getResultSet = (dr) =>
             {
-                return (_getData(dr), dr.GetLong("total_rows"));
+                return new Resultset<Material>(dr.GetLong("total_rows"), _getData(dr));
             };
 
         public IObservable<Material> Get(Guid id)
@@ -47,7 +47,7 @@ namespace Repositories
         }
 
 
-        public IObservable<(Material, Int64)> GetAll(int limit, int offset, string search)
+        public IObservable<Resultset<Material>> GetAll(int limit, int offset, string search)
         {
             List<IDbDataParameter> parameters = new List<IDbDataParameter>();
             parameters.Add("@limit".ToParam(DbType.Int32, limit));

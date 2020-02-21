@@ -33,7 +33,7 @@ namespace Api.Controllers
 
         [Route("all/{limit:int}/{offset:int}/{search?}")]
         [HttpGet()]
-        public IEnumerable<(Material, Int64)> GetAll(int limit, int offset, string search)
+        public IEnumerable<Resultset<Material>> GetAll(int limit, int offset, string search)
         {
             return _repo.GetAll(limit, offset, search).ToEnumerable();
         }
