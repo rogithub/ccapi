@@ -90,7 +90,7 @@ namespace Api.Controllers
         }
 
         [HttpPut()]
-        public async Task<ActionResult<Models.Material>> Put(Models.Material model)
+        public async Task<ActionResult<int>> Put(Models.Material model)
         {
             var entity = await _repo.Get(model.Guid).FirstOrDefaultAsync();
             if (entity == null) return NotFound();
@@ -99,7 +99,7 @@ namespace Api.Controllers
             var affectedRows = await _repo.Update(item);
             if (affectedRows > 0)
             {
-                return _mapper.Map<Models.Material>(item);
+                return affectedRows;
             }
 
             return BadRequest();
