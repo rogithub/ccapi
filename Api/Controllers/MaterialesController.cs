@@ -74,6 +74,10 @@ namespace Api.Controllers
         [HttpPost()]
         public async Task<ActionResult<Models.Material>> Post(Models.Material model)
         {
+            var entity = await _repo.Get(model.Guid).FirstOrDefaultAsync();
+            if (entity != null) return BadRequest("Already exists!");
+            entity.Id = 0;
+
             var item = _mapper.Map<Models.Material, Entities.Material>(model);
             var affectedRows = await _repo.Save(item);
             if (affectedRows > 0)
