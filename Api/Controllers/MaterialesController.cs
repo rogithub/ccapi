@@ -108,7 +108,7 @@ namespace Api.Controllers
         [HttpDelete("{id:guid}")]
         public async Task<ActionResult<int>> Delete(Guid id)
         {
-            var item = await _repo.Get(id);
+            var item = await _repo.Get(id).FirstOrDefaultAsync();
             if (item == null) return NotFound();
 
             var affectedRows = await _repo.Delete(id);
