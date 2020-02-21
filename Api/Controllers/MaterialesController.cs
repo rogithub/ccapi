@@ -88,5 +88,36 @@ namespace Api.Controllers
 
             return BadRequest();
         }
+
+        [HttpPut()]
+        public async Task<ActionResult<Models.Material>> Put(Models.Material model)
+        {
+            var entity = await _repo.Get(model.Guid).FirstOrDefaultAsync();
+            if (entity == null) return NotFound();
+
+            var item = _mapper.Map<Models.Material, Entities.Material>(model);
+            var affectedRows = await _repo.Update(item);
+            if (affectedRows > 0)
+            {
+                return _mapper.Map<Models.Material>(item);
+            }
+
+            return BadRequest();
+        }
+
+        [HttpDelete("{id:guid}")]
+        public async Task<ActionResult<int>> Delete(Guid id)
+        {
+            var item = await _repo.Get(id);
+            if (item == null) return NotFound();
+
+            var affectedRows = await _repo.Delete(id);
+            if (affectedRows > 0)
+            {
+                return affectedRows;
+            }
+
+            return BadRequest();
+        }
     }
 }
