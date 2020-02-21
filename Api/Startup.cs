@@ -12,6 +12,7 @@ using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 using ReactiveDb;
 using Repositories;
+using AutoMapper;
 
 namespace Api
 {
@@ -35,6 +36,7 @@ namespace Api
             });
             services.AddTransient<IClientesRepo, ClientesRepo>();
             services.AddTransient<IMaterialesRepo, MaterialesRepo>();
+            services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());            
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

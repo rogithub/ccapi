@@ -4,9 +4,12 @@ using System.Linq;
 using System.Reactive.Linq;
 using System.Threading.Tasks;
 using Entities;
+using Api.Models;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using Repositories;
+using AutoMapper;
+
 
 namespace Api.Controllers
 {
@@ -16,19 +19,25 @@ namespace Api.Controllers
     {
         private readonly ILogger<WeatherForecastController> _logger;
         private IClientesRepo _repo;
+        private readonly IMapper _mapper;
+        
         public Clientes(
             ILogger<WeatherForecastController> logger,
-            IClientesRepo repo)
+            IClientesRepo repo,
+            IMapper mapper)
         {
             _logger = logger;
             _repo = repo;
+            _mapper = mapper;
 
         }
 
         [HttpGet("{id:guid}")]
-        public IEnumerable<Cliente> Get(Guid id)
+        public async Task<ActionResult<Models.Cliente>> Get(Guid id)
         {
-            return _repo.Get(id).ToEnumerable();
+            var entities = await _repo.Get(id);
+            var entity = entities.FirstOrDefault();
+            return _mapper.Map<Models.Cliente>(entity);
         }
     }
 }
