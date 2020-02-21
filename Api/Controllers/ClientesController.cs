@@ -20,7 +20,7 @@ namespace Api.Controllers
         private readonly ILogger<WeatherForecastController> _logger;
         private IClientesRepo _repo;
         private readonly IMapper _mapper;
-        
+
         public Clientes(
             ILogger<WeatherForecastController> logger,
             IClientesRepo repo,
@@ -35,8 +35,7 @@ namespace Api.Controllers
         [HttpGet("{id:guid}")]
         public async Task<ActionResult<Models.Cliente>> Get(Guid id)
         {
-            var entities = await _repo.Get(id);
-            var entity = entities.FirstOrDefault();
+            var entity = await _repo.Get(id).FirstOrDefaultAsync();
             return _mapper.Map<Models.Cliente>(entity);
         }
     }
