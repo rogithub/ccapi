@@ -41,7 +41,18 @@ namespace Repositories
 
             var cmd = @"SELECT id, guid, nombre, color, unidad, 
             marca, modelo, comentarios, activo 
-            FROM public.materiales WHERE guid=@guid;".ToCmd(CommandType.Text, param);
+            FROM public.materiales WHERE guid=@guid AND activo=TRUE;".ToCmd(CommandType.Text, param);
+
+            return Db.ExecuteDataReader(cmd, _getData);
+        }
+
+        public IObservable<Material> Get(Int64 id)
+        {
+            var param = "@id".ToParam(DbType.Int64, id);
+
+            var cmd = @"SELECT id, guid, nombre, color, unidad, 
+            marca, modelo, comentarios, activo 
+            FROM public.materiales WHERE id=@id AND activo=TRUE;".ToCmd(CommandType.Text, param);
 
             return Db.ExecuteDataReader(cmd, _getData);
         }
@@ -55,7 +66,7 @@ namespace Repositories
             string whereClause = "";
             if (!string.IsNullOrWhiteSpace(search))
             {
-                whereClause = "WHERE search_field @@ plainto_tsquery(@search)";
+                whereClause = "AND search_field @@ plainto_tsquery(@search)";
                 parameters.Add("@search".ToParam(DbType.String, search));
             }
             var cmd = string.Format(@"            
@@ -63,7 +74,7 @@ namespace Repositories
                     id, guid, nombre, color, unidad, marca, modelo, comentarios, activo, 
                     COUNT(*) OVER() as total_rows 
                 FROM 
-                    public.materiales {0} 
+                    public.materiales WHERE activo=TRUE {0} 
                 ORDER BY 
                     id
                 LIMIT @limit OFFSET @offset;
@@ -76,7 +87,7 @@ namespace Repositories
         {
             var param = "@guid".ToParam(DbType.Guid, id);
 
-            var cmd = @"UPDATE public.materiales SET activo=@activo WHERE guid=@guid;".ToCmd(CommandType.Text, param);
+            var cmd = @"UPDATE public.materiales SET activo=FALSE WHERE guid=@guid;".ToCmd(CommandType.Text, param);
 
             return Db.ExecuteNonQuery(cmd);
         }
