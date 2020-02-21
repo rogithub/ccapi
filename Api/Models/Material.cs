@@ -1,5 +1,6 @@
 using System;
 using System.ComponentModel.DataAnnotations;
+using Api.Validators;
 
 namespace Api.Models
 {
@@ -8,6 +9,7 @@ namespace Api.Models
         [Required]
         public Int64 Id { get; set; }
         [Required]
+        [NonEmptyGuid]
         public Guid Guid { get; set; }
         [Required]
         [StringLength(300)]

@@ -29,7 +29,9 @@ namespace Api
         public void ConfigureServices(IServiceCollection services)
         {
             string connString = ConfigurationExtensions.GetConnectionString(this.Configuration, "Default");
-            services.AddControllers();
+            services.AddControllers( cfg => {
+                    cfg.Filters.Add(new Api.Filters.ValidateModelAttribute());
+            });
             services.AddTransient<ReactiveDb.IDatabase>((svc) =>
             {
                 return new ReactiveDb.Database(connString);

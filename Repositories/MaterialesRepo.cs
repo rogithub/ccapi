@@ -123,9 +123,9 @@ namespace Repositories
                 "@nombre".ToParam(DbType.String, material.Nombre),
                 "@color".ToParam(DbType.String, material.Color),
                 "@unidad".ToParam(DbType.String, material.Unidad),
-                "@marca".ToParam(DbType.String, material.Marca),
-                "@modelo".ToParam(DbType.String, material.Modelo),
-                "@comentarios".ToParam(DbType.String, material.Comentarios),
+                "@marca".ToParam(DbType.String, material.Marca??""),
+                "@modelo".ToParam(DbType.String, material.Modelo??""),
+                "@comentarios".ToParam(DbType.String, material.Comentarios??""),
                 "@activo".ToParam(DbType.Boolean, material.Activo)
             };
             var cmd =
