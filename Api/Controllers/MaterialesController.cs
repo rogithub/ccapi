@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Reactive.Linq;
 using System.Threading.Tasks;
-using Entities;
+using AutoMapper;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using Repositories;
@@ -12,36 +12,52 @@ namespace Api.Controllers
 {
     [ApiController]
     [Route("[controller]")]
-    public class Materiales : ControllerBase
+    public class MaterialesController : ControllerBase
     {
-        private readonly ILogger<WeatherForecastController> _logger;
-        private IMaterialesRepo _repo;
-        public Materiales(
-            ILogger<WeatherForecastController> logger,
-            IMaterialesRepo repo)
+        private readonly ILogger<MaterialesController> _logger;
+        private readonly IMaterialesRepo _repo;
+        private readonly IMapper _mapper;
+        public MaterialesController(
+            ILogger<MaterialesController> logger,
+            IMaterialesRepo repo,
+            IMapper mapper)
         {
             _logger = logger;
             _repo = repo;
+            _mapper = mapper;
 
         }
 
         [HttpGet("{id:guid}")]
-        public IEnumerable<Material> Get(Guid id)
+        public async Task<ActionResult<Models.Material>> Get(Guid id)
         {
-            return _repo.Get(id).ToEnumerable();
+            var entity = await _repo.Get(id).FirstOrDefaultAsync();
+            if (entity == null) return NotFound();
+
+            return _mapper.Map<Models.Material>(entity);
         }
 
         [HttpGet("{id:int}")]
-        public IEnumerable<Material> Get(int id)
+        public async Task<ActionResult<Models.Material>> Get(int id)
         {
-            return _repo.Get(id).ToEnumerable();
+            var entity = await _repo.Get(id).FirstOrDefaultAsync();
+            if (entity == null) return NotFound();
+
+            return _mapper.Map<Models.Material>(entity);
         }
 
         [Route("search/{limit:int}/{offset:int}/{search?}")]
         [HttpGet()]
-        public IEnumerable<Resultset<Material>> Search(int limit, int offset, string search)
+        public async Task<ActionResult<IEnumerable<Models.Material>>> Search(int limit, int offset, string search)
         {
-            return _repo.GetAll(limit, offset, search).ToEnumerable();
+            var rs = _repo.GetAll(limit, offset, search).ToAsyncEnumerable();
+            var list = new List<Models.Material>();
+            await foreach (var item in rs)
+            {
+                list.Add(_mapper.Map<Models.Material>(item.Payload));
+            }
+
+            return Ok(list);
         }
     }
 }

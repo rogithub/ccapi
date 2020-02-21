@@ -1,10 +1,7 @@
 using System;
-using System.Collections.Generic;
 using System.Linq;
 using System.Reactive.Linq;
 using System.Threading.Tasks;
-using Entities;
-using Api.Models;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using Repositories;
@@ -15,14 +12,14 @@ namespace Api.Controllers
 {
     [ApiController]
     [Route("[controller]")]
-    public class Clientes : ControllerBase
+    public class ClientesController : ControllerBase
     {
-        private readonly ILogger<WeatherForecastController> _logger;
-        private IClientesRepo _repo;
+        private readonly ILogger<ClientesController> _logger;
+        private readonly IClientesRepo _repo;
         private readonly IMapper _mapper;
 
-        public Clientes(
-            ILogger<WeatherForecastController> logger,
+        public ClientesController(
+            ILogger<ClientesController> logger,
             IClientesRepo repo,
             IMapper mapper)
         {
@@ -36,7 +33,10 @@ namespace Api.Controllers
         public async Task<ActionResult<Models.Cliente>> Get(Guid id)
         {
             var entity = await _repo.Get(id).FirstOrDefaultAsync();
+            if (entity == null) return NotFound();
+
             return _mapper.Map<Models.Cliente>(entity);
+
         }
     }
 }
