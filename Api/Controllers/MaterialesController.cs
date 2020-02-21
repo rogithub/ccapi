@@ -7,6 +7,7 @@ using AutoMapper;
 using Entities;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
+using Microsoft.AspNetCore.Routing;
 using Repositories;
 
 namespace Api.Controllers
@@ -18,15 +19,19 @@ namespace Api.Controllers
         private readonly ILogger<MaterialesController> _logger;
         private readonly IMaterialesRepo _repo;
         private readonly IMapper _mapper;
+        private readonly LinkGenerator _linkGen;
+
+
         public MaterialesController(
             ILogger<MaterialesController> logger,
             IMaterialesRepo repo,
-            IMapper mapper)
+            IMapper mapper,
+            LinkGenerator linkGen)
         {
             _logger = logger;
             _repo = repo;
             _mapper = mapper;
-
+            _linkGen = linkGen;
         }
 
         [HttpGet("{id:guid}")]
@@ -64,6 +69,20 @@ namespace Api.Controllers
             var result = new Resultset<IEnumerable<Models.Material>>(rowCount, list);
 
             return Ok(result);
+        }
+
+        [HttpPost()]
+        public async Task<ActionResult<Models.Material>> Post(Models.Material model)
+        {
+            var item = _mapper.Map<Models.Material, Entities.Material>(model);
+            var affectedRows = await _repo.Save(item);
+            if (affectedRows > 0)
+            {
+                var location = _linkGen.GetPathByAction("Get", "Materiales", new { model.Id });
+                return Created(location, _mapper.Map<Models.Material>(item));
+            }
+
+            return BadRequest();
         }
     }
 }
