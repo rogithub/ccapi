@@ -14,7 +14,7 @@ namespace Repositories
             this.Db = db;
         }
 
-        private Func<IDataReader, Material> _getData = (dr) =>
+        private static Func<IDataReader, Material> _getData = (dr) =>
             {
                 return new Material()
                 {
@@ -30,49 +30,59 @@ namespace Repositories
                 };
             };
 
+        private static Func<IDataReader, (Material, Int64)> _getResultSet = (dr) =>
+            {
+                return (_getData(dr), dr.GetLong("total_rows"));
+            };
+
         public IObservable<Material> Get(Guid id)
         {
             var param = "@guid".ToParam(DbType.Guid, id);
 
             var cmd = @"SELECT id, guid, nombre, color, unidad, 
             marca, modelo, comentarios, activo 
-            FROM public.materiales WHERE guid=@guid;".ToCmd(CommandType.Text, param);            
+            FROM public.materiales WHERE guid=@guid;".ToCmd(CommandType.Text, param);
 
             return Db.ExecuteDataReader(cmd, _getData);
         }
 
 
-        public IObservable<Material> GetAll(int limit, int offset, string search)
-        {            
-            List<IDbDataParameter> parameters = new List<IDbDataParameter>(); 
+        public IObservable<(Material, Int64)> GetAll(int limit, int offset, string search)
+        {
+            List<IDbDataParameter> parameters = new List<IDbDataParameter>();
             parameters.Add("@limit".ToParam(DbType.Int32, limit));
             parameters.Add("@offset".ToParam(DbType.Int32, offset));
             string whereClause = "";
-            if (!string.IsNullOrWhiteSpace(search)) {
+            if (!string.IsNullOrWhiteSpace(search))
+            {
                 whereClause = "WHERE search_field @@ plainto_tsquery(@search)";
                 parameters.Add("@search".ToParam(DbType.String, search));
-            }              
-            var cmd = string.Format(@"
-            SELECT 
-                id, guid, nombre, color, unidad, marca, modelo, comentarios, activo 
-            FROM 
-                public.materiales {0} 
-            LIMIT @limit OFFSET @offset;", whereClause).ToCmd(CommandType.Text, parameters.ToArray());         
+            }
+            var cmd = string.Format(@"            
+                SELECT 
+                    id, guid, nombre, color, unidad, marca, modelo, comentarios, activo, 
+                    COUNT(*) OVER() as total_rows 
+                FROM 
+                    public.materiales {0} 
+                ORDER BY 
+                    id
+                LIMIT @limit OFFSET @offset;
+            ", whereClause).ToCmd(CommandType.Text, parameters.ToArray());
 
-            return Db.ExecuteDataReader(cmd, _getData);
+            return Db.ExecuteDataReader(cmd, _getResultSet);
         }
 
         public IObservable<int> Delete(Guid id)
-		{
+        {
             var param = "@guid".ToParam(DbType.Guid, id);
 
-			var cmd = @"UPDATE public.materiales SET activo=@activo WHERE guid=@guid;".ToCmd(CommandType.Text, param); 
+            var cmd = @"UPDATE public.materiales SET activo=@activo WHERE guid=@guid;".ToCmd(CommandType.Text, param);
 
-			return Db.ExecuteNonQuery(cmd);
-		}
+            return Db.ExecuteNonQuery(cmd);
+        }
 
         public IObservable<int> Update(Material material)
-		{
+        {
             var parameters = new IDbDataParameter[] {
                 "@guid".ToParam(DbType.Guid, material.Guid),
                 "@nombre".ToParam(DbType.String, material.Nombre),
@@ -82,7 +92,7 @@ namespace Repositories
                 "@modelo".ToParam(DbType.String, material.Modelo),
                 "@comentarios".ToParam(DbType.String, material.Comentarios),
             };
-			var cmd = 
+            var cmd =
             @"UPDATE public.materiales SET 
                 nombre=@nombre,
                 color=@color,
@@ -90,14 +100,14 @@ namespace Repositories
                 marca=@marca,
                 modelo=@modelo,
                 comentarios=@comentarios,
-             WHERE guid=@guid;".ToCmd(CommandType.Text, parameters); 
+             WHERE guid=@guid;".ToCmd(CommandType.Text, parameters);
 
-			return Db.ExecuteNonQuery(cmd);
-		}
+            return Db.ExecuteNonQuery(cmd);
+        }
 
         public IObservable<int> Save(Material material)
-		{
-			var parameters = new IDbDataParameter[] {
+        {
+            var parameters = new IDbDataParameter[] {
                 "@guid".ToParam(DbType.Guid, material.Guid),
                 "@nombre".ToParam(DbType.String, material.Nombre),
                 "@color".ToParam(DbType.String, material.Color),
@@ -107,13 +117,13 @@ namespace Repositories
                 "@comentarios".ToParam(DbType.String, material.Comentarios),
                 "@activo".ToParam(DbType.Boolean, material.Activo)
             };
-			var cmd = 
+            var cmd =
             @"INSERT INTO public.materiales 
             (guid, nombre, color, unidad, marca, modelo, comentarios, activo) 
             VALUES 
-            (@guid, @nombre, @color, @unidad, @marca, @modelo, @comentarios, @activo) ;".ToCmd(CommandType.Text, parameters); 
+            (@guid, @nombre, @color, @unidad, @marca, @modelo, @comentarios, @activo) ;".ToCmd(CommandType.Text, parameters);
 
-			return Db.ExecuteNonQuery(cmd);
-		}
+            return Db.ExecuteNonQuery(cmd);
+        }
     }
 }
