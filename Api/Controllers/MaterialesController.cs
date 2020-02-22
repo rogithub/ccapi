@@ -17,14 +17,14 @@ namespace Api.Controllers
     public class MaterialesController : ControllerBase
     {
         private readonly ILogger<MaterialesController> _logger;
-        private readonly IMaterialesRepo _repo;
+        private readonly IBaseRepo<Material> _repo;
         private readonly IMapper _mapper;
         private readonly LinkGenerator _linkGen;
 
 
         public MaterialesController(
             ILogger<MaterialesController> logger,
-            IMaterialesRepo repo,
+            IBaseRepo<Material> repo,
             IMapper mapper,
             LinkGenerator linkGen)
         {
