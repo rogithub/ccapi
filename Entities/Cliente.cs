@@ -2,7 +2,7 @@
 
 namespace Entities
 {
-    public class Cliente
+    public class Cliente : I2ids
     {
         public Int64 Id { get; set; }
         public Guid Guid { get; set; }

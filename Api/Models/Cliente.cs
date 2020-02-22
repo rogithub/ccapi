@@ -1,8 +1,9 @@
 ﻿using System;
+using Entities;
 
 namespace Api.Models
 {
-    public class Cliente
+    public class Cliente : I2ids
     {
         public Int64 Id { get; set; }
         public Guid Guid { get; set; }

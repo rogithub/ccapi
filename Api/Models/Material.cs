@@ -1,10 +1,11 @@
 using System;
 using System.ComponentModel.DataAnnotations;
 using Api.Validators;
+using Entities;
 
 namespace Api.Models
 {
-    public class Material
+    public class Material : I2ids
     {
         [Required]
         public Int64 Id { get; set; }

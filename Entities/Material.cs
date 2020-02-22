@@ -2,7 +2,7 @@ using System;
 
 namespace Entities
 {
-    public class Material
+    public class Material : I2ids
     {
         public Int64 Id { get; set; }
         public Guid Guid { get; set; }
