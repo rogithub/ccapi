@@ -31,7 +31,7 @@ namespace Api
             {
                 return new ReactiveDb.Database(connString);
             });
-            services.AddTransient<IClientesRepo, ClientesRepo>();
+            services.AddTransient(typeof(IBaseRepo<Cliente>), typeof(ClientesRepo));
             services.AddTransient(typeof(IBaseRepo<Material>), typeof(MaterialesRepo));
             services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
         }

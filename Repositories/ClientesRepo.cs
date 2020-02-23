@@ -1,105 +1,115 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Data;
 using Entities;
 using ReactiveDb;
 
 namespace Repositories
 {
-    public class ClientesRepo : IClientesRepo
+    public class ClientesRepo : BaseRepo<Cliente>, IBaseRepo<Cliente>
     {
-        private IDatabase Db { get; set; }
-        public ClientesRepo(IDatabase db)
+        public ClientesRepo(IDatabase db) : base(db)
         {
-            this.Db = db;
+
         }
 
-        private Func<IDataReader, Cliente> _getData = (dr) =>
-            {
-                return new Cliente()
-                {
-                    Id = dr.GetInt("id"),
-                    Guid = dr.GetGuid("guid"),
-                    FacturacionGuid = dr.GetGuid("facturacionid"),
-                    Contacto = dr.GetString("contacto"),
-                    Empresa = dr.GetString("empresa"),
-                    Telefono = dr.GetString("telefono"),
-                    Email = dr.GetString("email"),
-                    Domicilio = dr.GetString("domicilio"),
-                    FechaCreado = dr.GetDate("fechacreado"),
-                    Activo = dr.GetValue<bool>("activo"),
+        protected override string GetByGuidSql =>
+        @"SELECT id, guid, facturacionid, contacto, empresa, 
+                 telefono, email, domicilio, fechacreado, activo 
+        FROM public.clientes WHERE guid=@guid AND activo=TRUE;";
 
-                };
-            };
+        protected override string GetByIdSql =>
+        @"SELECT id, guid, facturacionid, contacto, empresa, 
+                 telefono, email, domicilio, fechacreado, activo 
+        FROM public.clientes WHERE id=@id AND activo=TRUE;";
+        protected override string SerchSql =>
+        @"SELECT 
+            id, guid, facturacionid, contacto, empresa, telefono, email, domicilio, fechacreado, activo, 
+            COUNT(*) OVER() as total_rows 
+        FROM 
+            public.clientes WHERE activo=TRUE {0} 
+        ORDER BY 
+            {1}
+        LIMIT @limit OFFSET @offset;";
 
-        public IObservable<Cliente> Get(Guid id)
-        {
-            var param = "@guid".ToParam(DbType.Guid, id);
+        protected override string DeleteSql =>
+        @"UPDATE public.clientes SET activo=FALSE WHERE guid=@guid;";
 
-            var cmd = @"SELECT id, guid, facturacionid, contacto, empresa, 
-            telefono, email, domicilio, fechacreado, activo 
-            FROM public.clientes WHERE guid=@guid;".ToCmd(CommandType.Text, param);            
-
-            return Db.ExecuteDataReader(cmd, _getData);
-        }
-
-
-        public IObservable<Cliente> GetAll()
-        {
-            var cmd = @"SELECT id, guid, facturacionid, contacto, empresa, 
-            telefono, email, domicilio, fechacreado, activo 
-            FROM public.clientes;".ToCmd();            
-
-            return Db.ExecuteDataReader(cmd, _getData);
-        }
-
-        public IObservable<int> Delete(Guid id)
-		{
-            var param = "@guid".ToParam(DbType.Guid, id);
-
-			var cmd = @"UPDATE public.clientes SET activo=@activo WHERE guid=@guid;".ToCmd(CommandType.Text, param); 
-
-			return Db.ExecuteNonQuery(cmd);
-		}
-
-        public IObservable<int> Update(Cliente cliente)
-		{
-            var parameters = new IDbDataParameter[] {
-                "@guid".ToParam(DbType.Guid, cliente.Guid),
-                "@contacto".ToParam(DbType.String, cliente.Contacto),
-                "@empresa".ToParam(DbType.String, cliente.Empresa),
-                "@telefono".ToParam(DbType.String, cliente.Telefono),
-                "@domicilio".ToParam(DbType.String, cliente.Domicilio),
-            };
-			var cmd = 
-            @"UPDATE public.clientes SET 
+        protected override string UpdateSql =>
+        @"UPDATE public.clientes SET
                 contacto=@contacto,
                 empresa=@empresa,
                 telefono=@telefono,
-                domicilio=@domicilio
-             WHERE guid=@guid;".ToCmd(CommandType.Text, parameters); 
+                email=@email,
+                domicilio=@domicilio,
+             WHERE guid=@guid;";
 
-			return Db.ExecuteNonQuery(cmd);
-		}
-
-        public IObservable<int> Save(Cliente cliente)
-		{
-			var parameters = new IDbDataParameter[] {
-                "@guid".ToParam(DbType.Guid, cliente.Guid),
-                "@facturacionid".ToParam(DbType.Guid, cliente.FacturacionGuid),
-                "@contacto".ToParam(DbType.String, cliente.Contacto),
-                "@empresa".ToParam(DbType.String, cliente.Empresa),
-                "@telefono".ToParam(DbType.String, cliente.Telefono),
-                "@domicilio".ToParam(DbType.String, cliente.Domicilio),
-                "@fechacreado".ToParam(DbType.DateTime, cliente.FechaCreado),
-                "@activo".ToParam(DbType.Boolean, cliente.Activo)
-            };
-			var cmd = 
-            @"INSERT INTO public.clientes 
+        protected override string SaveSql =>
+        @"INSERT INTO public.clientes 
             (guid, facturacionid, contacto, empresa, telefono, email, domicilio, fechacreado, activo) 
             VALUES 
-            (@guid, @facturacionid, @contacto, @empresa, @telefono, @email, @domicilio, @fechacreado, @activo);".ToCmd(CommandType.Text, parameters); 
+            (@guid, @facturacionid, @contacto, @empresa, @telefono, @email, @domicilio, @fechacreado, @activo);";
 
-			return Db.ExecuteNonQuery(cmd);
-		}
+        protected override Cliente GetData(IDataReader dr)
+        {
+            return new Cliente()
+            {
+                Id = dr.GetInt("id"),
+                Guid = dr.GetGuid("guid"),
+                FacturacionGuid = dr.GetGuid("facturacionid"),
+                Contacto = dr.GetString("contacto"),
+                Empresa = dr.GetString("empresa"),
+                Telefono = dr.GetString("telefono"),
+                Email = dr.GetString("email"),
+                Domicilio = dr.GetString("domicilio"),
+                FechaCreado = dr.GetDate("fechacreado"),
+                Activo = dr.GetValue<bool>("activo"),
+
+            };
+        }
+
+        protected override IDbDataParameter[] ToUpdateParams(Cliente model)
+        {
+            var d = ToParams(model);
+            return new IDbDataParameter[] {
+                d["@contacto"],
+                d["@empresa"],
+                d["@telefono"],
+                d["@email"],
+                d["@domicilio"]
+            };
+        }
+
+        protected override IDbDataParameter[] ToSaveParams(Cliente model)
+        {
+            var d = ToParams(model);
+            return new IDbDataParameter[] {
+                d["@guid"],
+                d["@facturacionid"],
+                d["@contacto"],
+                d["@empresa"],
+                d["@telefono"],
+                d["@email"],
+                d["@domicilio"],
+                d["@fechacreado"],
+                d["@activo"]
+            };
+        }
+
+        protected override Dictionary<string, IDbDataParameter> ToParams(Cliente model)
+        {
+            return new Dictionary<string, IDbDataParameter>() {
+                { "@id", "@id".ToParam(DbType.Int64, model.Id) },
+                { "@guid", "@guid".ToParam(DbType.Guid, model.Guid) },
+                { "@facturacionid", "@facturacionid".ToParam(DbType.Guid, model.FacturacionGuid) },
+                { "@contacto", "@contacto".ToParam(DbType.String, model.Contacto) },
+                { "@empresa", "@empresa".ToParam(DbType.String, model.Empresa) },
+                { "@telefono", "@telefono".ToParam(DbType.String, model.Telefono) },
+                { "@email", "@email".ToParam(DbType.String, model.Email ?? "") },
+                { "@domicilio", "@domicilio".ToParam(DbType.String, model.Domicilio ?? "") },
+                { "@fechacreado", "@fechacreado".ToParam(DbType.DateTime, model.FechaCreado) },
+                { "@activo", "@activo".ToParam(DbType.Boolean, model.Activo) }
+            };
+        }
     }
 }
