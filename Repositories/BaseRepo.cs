@@ -54,10 +54,10 @@ namespace Repositories
             parameters.Add("@limit".ToParam(DbType.Int32, entity.Limit));
             parameters.Add("@offset".ToParam(DbType.Int32, entity.Offset));
             string whereClause = "";
-            if (!string.IsNullOrWhiteSpace(entity.SearchPattern))
+            if (!string.IsNullOrWhiteSpace(entity.Pattern))
             {
                 whereClause = "AND search_field @@ plainto_tsquery(@search)";
-                parameters.Add("@search".ToParam(DbType.String, entity.SearchPattern));
+                parameters.Add("@search".ToParam(DbType.String, entity.Pattern));
             }
             if (entity.Columns == null || entity.Columns.Length == 0)
             {

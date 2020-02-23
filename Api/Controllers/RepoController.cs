@@ -53,9 +53,10 @@ namespace Api.Controllers
         [Route("search")]
         [HttpGet()]
         public async Task<ActionResult<Resultset<IEnumerable<TModel>>>> Search
-        (SearchData model)
+        (Models.SearchData model)
         {
-            var rs = _repo.Search(model).ToAsyncEnumerable();
+            var entity = _mapper.Map<Models.SearchData, Entities.SearchData>(model);
+            var rs = _repo.Search(entity).ToAsyncEnumerable();
             var list = new List<TModel>();
             Int64 rowCount = 0;
 

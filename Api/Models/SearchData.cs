@@ -1,28 +1,23 @@
-using System;
+using System.ComponentModel.DataAnnotations;
+using Entities;
 
-namespace Entities
+namespace Api.Models
 {
-    public enum Order
-    {
-        Asc,
-        Desc,
-    }
     public class OrderCol
     {
+        [Required]
         public string Col { get; set; }
+        [Required]
         public Order Order { get; set; }
-
-        public override string ToString()
-        {
-            return string.Format("{0} {1}", Col,
-            Order == Order.Asc ? "ASC" : "DESC");
-        }
     }
     public class SearchData
     {
+        [Required]
         public string Pattern { get; set; }
         public OrderCol[] Columns { get; set; }
+        [Required]
         public int Limit { get; set; }
+        [Required]
         public int Offset { get; set; }
     }
 }
