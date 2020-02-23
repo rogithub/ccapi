@@ -69,30 +69,47 @@ namespace Repositories
             };
         }
 
+        protected override Dictionary<string, IDbDataParameter> ToParams(Material model)
+        {
+            return new Dictionary<string, IDbDataParameter>() {
+                { "@id", "@id".ToParam(DbType.Int64, model.Id) },
+                { "@guid", "@guid".ToParam(DbType.Guid, model.Guid) },
+                { "@nombre", "@nombre".ToParam(DbType.String, model.Nombre) },
+                { "@color", "@color".ToParam(DbType.String, model.Color) },
+                { "@unidad", "@unidad".ToParam(DbType.String, model.Unidad) },
+                { "@marca", "@marca".ToParam(DbType.String, model.Marca ?? "") },
+                { "@modelo", "@modelo".ToParam(DbType.String, model.Modelo ?? "") },
+                { "@comentarios", "@comentarios".ToParam(DbType.String, model.Comentarios ?? "") },
+                { "@activo", "@activo".ToParam(DbType.Boolean, model.Activo) }
+            };
+        }
+
         protected override IDbDataParameter[] ToSaveParams(Material model)
         {
+            var d = ToParams(model);
             return new IDbDataParameter[] {
-                "@guid".ToParam(DbType.Guid, model.Guid),
-                "@nombre".ToParam(DbType.String, model.Nombre),
-                "@color".ToParam(DbType.String, model.Color),
-                "@unidad".ToParam(DbType.String, model.Unidad),
-                "@marca".ToParam(DbType.String, model.Marca??""),
-                "@modelo".ToParam(DbType.String, model.Modelo??""),
-                "@comentarios".ToParam(DbType.String, model.Comentarios??""),
-                "@activo".ToParam(DbType.Boolean, model.Activo)
+                d["@guid"],
+                d["@nombre"],
+                d["@color"],
+                d["@unidad"],
+                d["@marca"],
+                d["@modelo"],
+                d["@comentarios"],
+                d["@activo"]
             };
         }
 
         protected override IDbDataParameter[] ToUpdateParams(Material model)
         {
+            var d = ToParams(model);
             return new IDbDataParameter[] {
-                "@guid".ToParam(DbType.Guid, model.Guid),
-                "@nombre".ToParam(DbType.String, model.Nombre),
-                "@color".ToParam(DbType.String, model.Color),
-                "@unidad".ToParam(DbType.String, model.Unidad),
-                "@marca".ToParam(DbType.String, model.Marca),
-                "@modelo".ToParam(DbType.String, model.Modelo),
-                "@comentarios".ToParam(DbType.String, model.Comentarios),
+                d["@guid"],
+                d["@nombre"],
+                d["@color"],
+                d["@unidad"],
+                d["@marca"],
+                d["@modelo"],
+                d["@comentarios"]
             };
         }
     }

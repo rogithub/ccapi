@@ -22,6 +22,7 @@ namespace Repositories
         protected abstract T GetData(IDataReader dr);
         protected abstract IDbDataParameter[] ToUpdateParams(T model);
         protected abstract IDbDataParameter[] ToSaveParams(T model);
+        protected abstract Dictionary<string, IDbDataParameter> ToParams(T model);
 
         protected Resultset<T> GetResultSet(IDataReader dr)
         {
