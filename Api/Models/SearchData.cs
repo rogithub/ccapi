@@ -12,7 +12,6 @@ namespace Api.Models
     }
     public class SearchData
     {
-        [Required]
         public string Pattern { get; set; }
         public OrderCol[] Columns { get; set; }
         [Required]
