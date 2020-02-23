@@ -46,11 +46,12 @@ namespace Repositories
             return Db.ExecuteDataReader(cmd, GetData);
         }
 
-        public IObservable<Resultset<T>> GetAll(int limit, int offset, string search)
+        public IObservable<Resultset<T>> GetAll(int limit, int offset, string search, string orderby = "id")
         {
             List<IDbDataParameter> parameters = new List<IDbDataParameter>();
             parameters.Add("@limit".ToParam(DbType.Int32, limit));
             parameters.Add("@offset".ToParam(DbType.Int32, offset));
+            parameters.Add("@orderby".ToParam(DbType.String, orderby));
             string whereClause = "";
             if (!string.IsNullOrWhiteSpace(search))
             {

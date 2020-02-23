@@ -31,7 +31,7 @@ namespace Repositories
         FROM 
             public.materiales WHERE activo=TRUE {0} 
         ORDER BY 
-            id
+            ORDER BY @orderby
         LIMIT @limit OFFSET @offset;";
 
         protected override string DeleteSql =>

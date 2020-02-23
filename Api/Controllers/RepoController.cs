@@ -50,11 +50,12 @@ namespace Api.Controllers
             return _mapper.Map<TModel>(entity);
         }
 
-        [Route("search/{limit:int}/{offset:int}/{search?}")]
+        [Route("search/{limit:int}/{offset:int}/{search?}/{orderby?}")]
         [HttpGet()]
-        public async Task<ActionResult<Resultset<IEnumerable<TModel>>>> Search(int limit, int offset, string search)
+        public async Task<ActionResult<Resultset<IEnumerable<TModel>>>> Search
+        (int limit, int offset, string search, string orderby)
         {
-            var rs = _repo.GetAll(limit, offset, search).ToAsyncEnumerable();
+            var rs = _repo.GetAll(limit, offset, search, orderby).ToAsyncEnumerable();
             var list = new List<TModel>();
             Int64 rowCount = 0;
 
