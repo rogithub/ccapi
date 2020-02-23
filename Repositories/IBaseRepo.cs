@@ -7,7 +7,7 @@ namespace Repositories
     {
         IObservable<T> Get(Guid id);
         IObservable<T> Get(Int64 id);
-        IObservable<Resultset<T>> GetAll(int limit, int offset, string search, string orderby = "id");
+        IObservable<Resultset<T>> Search(SearchData entity);
         IObservable<int> Delete(Guid id);
         IObservable<int> Update(T entity);
         IObservable<int> Save(T entity);

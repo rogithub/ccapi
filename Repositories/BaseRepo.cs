@@ -1,4 +1,5 @@
 using System;
+using System.Linq;
 using System.Collections.Generic;
 using System.Data;
 using Entities;
@@ -47,19 +48,25 @@ namespace Repositories
             return Db.ExecuteDataReader(cmd, GetData);
         }
 
-        public IObservable<Resultset<T>> GetAll(int limit, int offset, string search, string orderby = "id")
+        public IObservable<Resultset<T>> Search(SearchData entity)
         {
             List<IDbDataParameter> parameters = new List<IDbDataParameter>();
-            parameters.Add("@limit".ToParam(DbType.Int32, limit));
-            parameters.Add("@offset".ToParam(DbType.Int32, offset));
-            parameters.Add("@orderby".ToParam(DbType.String, orderby));
+            parameters.Add("@limit".ToParam(DbType.Int32, entity.Limit));
+            parameters.Add("@offset".ToParam(DbType.Int32, entity.Offset));
             string whereClause = "";
-            if (!string.IsNullOrWhiteSpace(search))
+            if (!string.IsNullOrWhiteSpace(entity.SearchPattern))
             {
                 whereClause = "AND search_field @@ plainto_tsquery(@search)";
-                parameters.Add("@search".ToParam(DbType.String, search));
+                parameters.Add("@search".ToParam(DbType.String, entity.SearchPattern));
             }
-            var cmd = string.Format(SerchSql, whereClause).
+            if (entity.Columns == null || entity.Columns.Length == 0)
+            {
+                entity.Columns = new OrderCol[] { new OrderCol() { Col = "id", Order = Order.Asc } };
+            }
+            string orderby = string.Join(",",
+            (from c in entity.Columns select c.ToString()).ToArray());
+
+            var cmd = string.Format(SerchSql, whereClause, orderby).
             ToCmd(CommandType.Text, parameters.ToArray());
 
             return Db.ExecuteDataReader(cmd, GetResultSet);
