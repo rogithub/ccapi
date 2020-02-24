@@ -116,6 +116,7 @@ namespace Repositories
         {
             var d = ToParams(model);
             return new IDbDataParameter[] {
+                d["@guid"],
                 d["@nombre"],
                 d["@calle"],
                 d["@noexterior"],
