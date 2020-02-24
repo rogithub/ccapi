@@ -44,7 +44,7 @@ namespace Repositories
                 unidad=@unidad,
                 marca=@marca,
                 modelo=@modelo,
-                comentarios=@comentarios,
+                comentarios=@comentarios
              WHERE guid=@guid;";
 
         protected override string SaveSql =>
@@ -103,7 +103,6 @@ namespace Repositories
         {
             var d = ToParams(model);
             return new IDbDataParameter[] {
-                d["@guid"],
                 d["@nombre"],
                 d["@color"],
                 d["@unidad"],

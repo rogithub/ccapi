@@ -33,6 +33,8 @@ namespace Api
             });
             services.AddTransient(typeof(IBaseRepo<Cliente>), typeof(ClientesRepo));
             services.AddTransient(typeof(IBaseRepo<Material>), typeof(MaterialesRepo));
+            services.AddTransient(typeof(IBaseRepo<DatosFacturacion>), typeof(DatosFacturacionRepo));
+
             services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
         }
 
