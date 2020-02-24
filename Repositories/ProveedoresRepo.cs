@@ -6,107 +6,106 @@ using ReactiveDb;
 
 namespace Repositories
 {
-    public class ClientesRepo : BaseRepo<Cliente>, IBaseRepo<Cliente>
+    public class ProveedoresRepo : BaseRepo<Proveedor>, IBaseRepo<Proveedor>
     {
-        public ClientesRepo(IDatabase db) : base(db)
+        public ProveedoresRepo(IDatabase db) : base(db)
         {
 
         }
 
         protected override string GetByGuidSql =>
-        @"SELECT id, guid, facturacionid, contacto, empresa, 
-                 telefono, email, domicilio, fechacreado, activo 
-        FROM public.clientes WHERE guid=@guid AND activo=TRUE;";
+        @"SELECT id, guid, contacto, empresa, 
+                 telefono, email, domicilio, comentarios, activo 
+        FROM public.proveedores WHERE guid=@guid AND activo=TRUE;";
 
         protected override string GetByIdSql =>
-        @"SELECT id, guid, facturacionid, contacto, empresa, 
-                 telefono, email, domicilio, fechacreado, activo 
-        FROM public.clientes WHERE id=@id AND activo=TRUE;";
+        @"SELECT id, guid, contacto, empresa, 
+                 telefono, email, domicilio, comentarios, activo 
+        FROM public.proveedores WHERE id=@id AND activo=TRUE;";
         protected override string SerchSql =>
         @"SELECT 
-            id, guid, facturacionid, contacto, empresa, telefono, email, domicilio, fechacreado, activo, 
+            id, guid, contacto, empresa, telefono, email, domicilio, comentarios, activo, 
             COUNT(*) OVER() as total_rows 
         FROM 
-            public.clientes WHERE activo=TRUE {0} 
+            public.proveedores WHERE activo=TRUE {0} 
         ORDER BY 
             {1}
         LIMIT @limit OFFSET @offset;";
 
         protected override string DeleteSql =>
-        @"UPDATE public.clientes SET activo=FALSE WHERE guid=@guid;";
+        @"UPDATE public.proveedores SET activo=FALSE WHERE guid=@guid;";
 
         protected override string UpdateSql =>
-        @"UPDATE public.clientes SET
+        @"UPDATE public.proveedores SET
                 contacto=@contacto,
                 empresa=@empresa,
                 telefono=@telefono,
                 email=@email,
-                domicilio=@domicilio
+                domicilio=@domicilio,
+                comentarios=@comentarios
              WHERE guid=@guid;";
 
         protected override string SaveSql =>
-        @"INSERT INTO public.clientes 
-            (guid, facturacionid, contacto, empresa, telefono, email, domicilio, fechacreado, activo) 
+        @"INSERT INTO public.proveedores 
+            (guid, contacto, empresa, telefono, email, domicilio, comentarios, activo) 
             VALUES 
-            (@guid, @facturacionid, @contacto, @empresa, @telefono, @email, @domicilio, @fechacreado, @activo);";
+            (@guid, @contacto, @empresa, @telefono, @email, @domicilio, @comentarios, @activo);";
 
-        protected override Cliente GetData(IDataReader dr)
+        protected override Proveedor GetData(IDataReader dr)
         {
-            return new Cliente()
+            return new Proveedor()
             {
                 Id = dr.GetInt("id"),
                 Guid = dr.GetGuid("guid"),
-                FacturacionGuid = dr.GetGuid("facturacionid"),
                 Contacto = dr.GetString("contacto"),
                 Empresa = dr.GetString("empresa"),
                 Telefono = dr.GetString("telefono"),
                 Email = dr.GetString("email"),
                 Domicilio = dr.GetString("domicilio"),
-                FechaCreado = dr.GetDate("fechacreado"),
+                Comentarios = dr.GetString("comentarios"),
                 Activo = dr.GetValue<bool>("activo")
             };
         }
 
-        protected override IDbDataParameter[] ToUpdateParams(Cliente model)
+        protected override IDbDataParameter[] ToUpdateParams(Proveedor model)
         {
             var d = ToParams(model);
             return new IDbDataParameter[] {
-                d["@contacto"],
-                d["@empresa"],
-                d["@telefono"],
-                d["@email"],
-                d["@domicilio"]
-            };
-        }
-
-        protected override IDbDataParameter[] ToSaveParams(Cliente model)
-        {
-            var d = ToParams(model);
-            return new IDbDataParameter[] {
-                d["@guid"],
-                d["@facturacionid"],
                 d["@contacto"],
                 d["@empresa"],
                 d["@telefono"],
                 d["@email"],
                 d["@domicilio"],
-                d["@fechacreado"],
+                d["@comentarios"]
+            };
+        }
+
+        protected override IDbDataParameter[] ToSaveParams(Proveedor model)
+        {
+            var d = ToParams(model);
+            return new IDbDataParameter[] {
+                d["@guid"],
+                d["@contacto"],
+                d["@empresa"],
+                d["@telefono"],
+                d["@email"],
+                d["@domicilio"],
+                d["@comentarios"],
                 d["@activo"]
             };
         }
 
-        protected override Dictionary<string, IDbDataParameter> ToParams(Cliente model)
+        protected override Dictionary<string, IDbDataParameter> ToParams(Proveedor model)
         {
             return new Dictionary<string, IDbDataParameter>() {
                 { "@id", "@id".ToParam(DbType.Int64, model.Id) },
                 { "@guid", "@guid".ToParam(DbType.Guid, model.Guid) },
-                { "@facturacionid", "@facturacionid".ToParam(DbType.Guid, model.FacturacionGuid) },
                 { "@contacto", "@contacto".ToParam(DbType.String, model.Contacto) },
                 { "@empresa", "@empresa".ToParam(DbType.String, model.Empresa) },
                 { "@telefono", "@telefono".ToParam(DbType.String, model.Telefono) },
                 { "@email", "@email".ToParam(DbType.String, model.Email ?? "") },
                 { "@domicilio", "@domicilio".ToParam(DbType.String, model.Domicilio ?? "") },
-                { "@fechacreado", "@fechacreado".ToParam(DbType.DateTime, model.FechaCreado) },
+                { "@comentarios", "@comentarios".ToParam(DbType.String, model.Comentarios ?? "") },
                 { "@activo", "@activo".ToParam(DbType.Boolean, model.Activo) }
             };
         }

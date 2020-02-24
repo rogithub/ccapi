@@ -5,14 +5,15 @@ using Api.Validators;
 
 namespace Api.Models
 {
-    public class Cliente : I2ids
+    public class Proveedor : I2ids
     {
         [Required]
         public Int64 Id { get; set; }
         [Required]
         [NonEmptyGuid]
         public Guid Guid { get; set; }
-        public Guid FacturacionGuid { get; set; }
+
+        
         [StringLength(300)]
         [Required]
         public string Contacto { get; set; }
@@ -25,12 +26,12 @@ namespace Api.Models
         [StringLength(300)]
         [Required]
         public string Email { get; set; }
-        [StringLength(300)]
+        [StringLength(500)]
         [Required]
         public string Domicilio { get; set; }
-        
+        [StringLength(500)]
         [Required]
-        public DateTime FechaCreado { get; set; }
+        public string Comentarios { get; set; }
         [Required]
         public bool Activo { get; set; }
     }
