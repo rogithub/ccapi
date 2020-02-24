@@ -51,7 +51,7 @@ namespace Api.Controllers
         }
 
         [Route("search")]
-        [HttpGet()]
+        [HttpPost()]
         public async Task<ActionResult<Resultset<IEnumerable<TModel>>>> Search
         (Models.SearchData model)
         {

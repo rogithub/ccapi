@@ -3,6 +3,12 @@ using Entities;
 
 namespace Api.Models
 {
+    public enum Order
+    {
+        Asc,
+        Desc,
+    }
+
     public class OrderCol
     {
         [Required]

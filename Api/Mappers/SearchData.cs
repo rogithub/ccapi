@@ -5,6 +5,15 @@ using Api.Models;
 
 namespace Api.Mappers
 {
+    public class OrderColProfile : Profile
+    {
+        public OrderColProfile()
+        {
+            this.CreateMap<Entities.OrderCol, Models.OrderCol>();
+            this.CreateMap<Models.OrderCol, Entities.OrderCol>();
+        }
+    }
+
     public class SearchDataProfile : Profile
     {
         public SearchDataProfile()
