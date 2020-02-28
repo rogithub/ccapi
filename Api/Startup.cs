@@ -12,6 +12,7 @@ namespace Api
 {
     public class Startup
     {
+        const string SINGLE_CLIENT_ORIGIN = "single_client_origin";
         public Startup(IConfiguration configuration)
         {
             Configuration = configuration;
@@ -23,6 +24,8 @@ namespace Api
         public void ConfigureServices(IServiceCollection services)
         {
             string connString = ConfigurationExtensions.GetConnectionString(this.Configuration, "Default");
+            string clientApp = Configuration["ClientAddress"];
+
             services.AddControllers(cfg =>
             {
                 cfg.Filters.Add(new Api.Filters.ValidateModelAttribute());
@@ -30,6 +33,15 @@ namespace Api
             services.AddTransient<ReactiveDb.IDatabase>((svc) =>
             {
                 return new ReactiveDb.Database(connString);
+            });
+            services.AddCors(options =>
+            {
+                options.AddPolicy(SINGLE_CLIENT_ORIGIN, builder =>
+                {
+                    builder.WithOrigins(clientApp).
+                    AllowAnyHeader().
+                    AllowAnyMethod();
+                });
             });
             services.AddTransient(typeof(IBaseRepo<Cliente>), typeof(ClientesRepo));
             services.AddTransient(typeof(IBaseRepo<Material>), typeof(MaterialesRepo));
@@ -47,6 +59,8 @@ namespace Api
             {
                 app.UseDeveloperExceptionPage();
             }
+
+            app.UseCors(SINGLE_CLIENT_ORIGIN);
 
             app.UseHttpsRedirection();
 
