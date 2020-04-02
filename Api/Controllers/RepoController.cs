@@ -33,6 +33,7 @@ namespace Api.Controllers
         }
 
         [HttpGet("{id:guid}")]
+        [Route("get/{id}")]
         public async Task<ActionResult<TModel>> Get(Guid id)
         {
             var entity = await _repo.Get(id).FirstOrDefaultAsync();
@@ -42,7 +43,8 @@ namespace Api.Controllers
         }
 
         [HttpGet("{id:int}")]
-        public async Task<ActionResult<TModel>> Get(int id)
+        [Route("getFolio/{id}")]
+        public async Task<ActionResult<TModel>> GetFolio(int id)
         {
             var entity = await _repo.Get(id).FirstOrDefaultAsync();
             if (entity == null) return NotFound();
@@ -106,6 +108,7 @@ namespace Api.Controllers
         }
 
         [HttpDelete("{id:guid}")]
+        [Route("delete/{id}")]
         public async Task<ActionResult<int>> Delete(Guid id)
         {
             var item = await _repo.Get(id).FirstOrDefaultAsync();
