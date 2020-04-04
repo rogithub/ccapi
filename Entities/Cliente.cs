@@ -6,7 +6,7 @@ namespace Entities
     {
         public Int64 Id { get; set; }
         public Guid Guid { get; set; }
-        public Guid FacturacionGuid { get; set; }
+        public Guid? FacturacionGuid { get; set; }
         public string Contacto { get; set; }
         public string Empresa { get; set; }
         public string Telefono { get; set; }

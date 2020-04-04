@@ -37,6 +37,11 @@ namespace ReactiveDb
             return Mappers.ToGuid(dr[key]);
         }
 
+        public static Guid? ToGuidNullable(this IDataReader dr, string key)
+        {
+            return Mappers.ToGuidNullable(dr[key]);
+        }
+
         public static XmlDocument GetXml(this IDataReader dr, string key)
         {
             return Mappers.ToXml(dr[key]);

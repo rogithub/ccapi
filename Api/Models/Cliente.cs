@@ -12,7 +12,7 @@ namespace Api.Models
         [Required]
         [NonEmptyGuid]
         public Guid Guid { get; set; }
-        public Guid FacturacionGuid { get; set; }
+        public Guid? FacturacionGuid { get; set; }
         [StringLength(300)]
         [Required]
         public string Contacto { get; set; }
@@ -28,7 +28,7 @@ namespace Api.Models
         [StringLength(300)]
         [Required]
         public string Domicilio { get; set; }
-        
+
         [Required]
         public DateTime FechaCreado { get; set; }
         [Required]

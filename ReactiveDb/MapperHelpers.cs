@@ -37,6 +37,13 @@ namespace ReactiveDb
             return (Guid)(o);
         };
 
+        public static Func<object, Guid?> ToGuidNullable = (o) =>
+        {
+            if (o == DBNull.Value)
+                return null;
+            return ToGuid(o);
+        };
+
         public static Func<object, XmlDocument> ToXml = (o) =>
         {
             XmlDocument doc = new XmlDocument();

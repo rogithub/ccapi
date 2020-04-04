@@ -56,7 +56,7 @@ namespace Repositories
             {
                 Id = dr.GetInt("id"),
                 Guid = dr.GetGuid("guid"),
-                FacturacionGuid = dr.GetGuid("facturacionid"),
+                FacturacionGuid = dr.ToGuidNullable("facturacionid"),
                 Contacto = dr.GetString("contacto"),
                 Empresa = dr.GetString("empresa"),
                 Telefono = dr.GetString("telefono"),
@@ -98,10 +98,17 @@ namespace Repositories
 
         protected override Dictionary<string, IDbDataParameter> ToParams(Cliente model)
         {
+
+
             return new Dictionary<string, IDbDataParameter>() {
                 { "@id", "@id".ToParam(DbType.Int64, model.Id) },
                 { "@guid", "@guid".ToParam(DbType.Guid, model.Guid) },
-                { "@facturacionid", "@facturacionid".ToParam(DbType.Guid, model.FacturacionGuid) },
+                { "@facturacionid", "@facturacionid".ToParam(DbType.Guid,
+
+                model.FacturacionGuid.HasValue ?
+                (object)model.FacturacionGuid.Value :
+                (object)DBNull.Value) },
+
                 { "@contacto", "@contacto".ToParam(DbType.String, model.Contacto) },
                 { "@empresa", "@empresa".ToParam(DbType.String, model.Empresa) },
                 { "@telefono", "@telefono".ToParam(DbType.String, model.Telefono) },

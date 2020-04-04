@@ -78,7 +78,7 @@ namespace Api.Controllers
         {
             var entity = await _repo.Get(model.Guid).FirstOrDefaultAsync();
             if (entity != null) return BadRequest("Already exists!");
-            entity.Id = 0;
+            model.Id = 0;
 
             var item = _mapper.Map<TModel, TEntity>(model);
             var affectedRows = await _repo.Save(item);
