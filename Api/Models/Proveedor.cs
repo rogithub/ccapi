@@ -13,7 +13,7 @@ namespace Api.Models
         [NonEmptyGuid]
         public Guid Guid { get; set; }
 
-        
+
         [StringLength(300)]
         [Required]
         public string Contacto { get; set; }
@@ -24,13 +24,10 @@ namespace Api.Models
         [Required]
         public string Telefono { get; set; }
         [StringLength(300)]
-        [Required]
         public string Email { get; set; }
         [StringLength(500)]
-        [Required]
         public string Domicilio { get; set; }
         [StringLength(500)]
-        [Required]
         public string Comentarios { get; set; }
         [Required]
         public bool Activo { get; set; }

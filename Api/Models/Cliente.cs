@@ -23,10 +23,8 @@ namespace Api.Models
         [Required]
         public string Telefono { get; set; }
         [StringLength(300)]
-        [Required]
         public string Email { get; set; }
         [StringLength(300)]
-        [Required]
         public string Domicilio { get; set; }
 
         [Required]
