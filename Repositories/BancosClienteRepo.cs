@@ -1,18 +1,15 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Data;
 using Entities;
 using ReactiveDb;
 
 namespace Repositories
 {
-    public class CuentasRepo : BaseRepo<Cuenta>, IBaseRepo<Cuenta>
+    public class BancosClienteRepo : SubtableBaseRepo<BancosCliente>, ISubtableBaseRepo<BancosCliente>
     {
-        public CuentasRepo(IDatabase db) : base(db)
+        public BancosClienteRepo(IDatabase db) : base(db)
         {
-
         }
-
         protected override string GetByGuidSql =>
         @"SELECT id, guid, banco, clabe, nocuenta, beneficiario, emailnotificacion,
                  nombre, efectivo, activo 
@@ -27,7 +24,9 @@ namespace Repositories
             id, guid, banco, clabe, nocuenta, beneficiario, emailnotificacion, nombre, efectivo, activo 
             COUNT(*) OVER() as total_rows 
         FROM 
-            public.cuentas WHERE activo=TRUE {0} 
+            public.cuentas WHERE guid in 
+            (SELECT cuentaid FROM public.clientescuentas WHERE clienteid = @parentId) 
+            AND activo=TRUE {0} 
         ORDER BY 
             {1}
         LIMIT @limit OFFSET @offset;";
@@ -52,9 +51,9 @@ namespace Repositories
             VALUES 
             (@id, @guid, @banco, @clabe, @nocuenta, @beneficiario, @emailnotificacion, @nombre, @efectivo, @activo);";
 
-        protected override Cuenta GetData(IDataReader dr)
+        protected override BancosCliente GetData(IDataReader dr)
         {
-            return new Cuenta()
+            return new BancosCliente()
             {
                 Id = dr.GetInt("id"),
                 Guid = dr.GetGuid("guid"),
@@ -62,14 +61,11 @@ namespace Repositories
                 Clabe = dr.GetString("clabe"),
                 NoCuenta = dr.GetString("nocuenta"),
                 Beneficiario = dr.GetString("beneficiario"),
-                Email = dr.GetString("emailnotificacion"),
-                Nombre = dr.GetString("nombre"),
-                Efectivo = dr.GetValue<bool>("efectivo"),
-                Activo = dr.GetValue<bool>("activo")
+                Email = dr.GetString("emailnotificacion")
             };
         }
 
-        protected override IDbDataParameter[] ToUpdateParams(Cuenta model)
+        protected override IDbDataParameter[] ToUpdateParams(BancosCliente model)
         {
             var d = ToParams(model);
             return new IDbDataParameter[] {
@@ -84,7 +80,7 @@ namespace Repositories
             };
         }
 
-        protected override IDbDataParameter[] ToSaveParams(Cuenta model)
+        protected override IDbDataParameter[] ToSaveParams(BancosCliente model)
         {
             var d = ToParams(model);
             return new IDbDataParameter[] {
@@ -100,7 +96,7 @@ namespace Repositories
             };
         }
 
-        protected override Dictionary<string, IDbDataParameter> ToParams(Cuenta model)
+        protected override Dictionary<string, IDbDataParameter> ToParams(BancosCliente model)
         {
             return new Dictionary<string, IDbDataParameter>() {
                 { "@id", "@id".ToParam(DbType.Int64, model.Id) },
@@ -110,9 +106,9 @@ namespace Repositories
                 { "@nocuenta", "@nocuenta".ToParam(DbType.String, model.NoCuenta ?? "") },
                 { "@beneficiario", "@beneficiario".ToParam(DbType.String, model.Beneficiario) },
                 { "@emailnotificacion", "@emailnotificacion".ToParam(DbType.String, model.Email ?? "") },
-                { "@nombre", "@nombre".ToParam(DbType.String, model.Nombre) },
-                { "@efectivo", "@efectivo".ToParam(DbType.Boolean, model.Efectivo) },
-                { "@activo", "@activo".ToParam(DbType.Boolean, model.Activo) }
+                { "@nombre", "@nombre".ToParam(DbType.String, "") },
+                { "@efectivo", "@efectivo".ToParam(DbType.Boolean, false) },
+                { "@activo", "@activo".ToParam(DbType.Boolean, true) }
             };
         }
     }

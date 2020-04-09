@@ -56,7 +56,7 @@ namespace Api
             services.AddTransient(typeof(IBaseRepo<Material>), typeof(MaterialesRepo));
             services.AddTransient(typeof(IBaseRepo<DatosFacturacion>), typeof(DatosFacturacionRepo));
             services.AddTransient(typeof(IBaseRepo<Proveedor>), typeof(ProveedoresRepo));
-            services.AddTransient(typeof(IBaseRepo<Cuenta>), typeof(CuentasRepo));
+            services.AddTransient(typeof(ISubtableBaseRepo<BancosCliente>), typeof(BancosClienteRepo));
 
             services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
         }
