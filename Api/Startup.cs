@@ -36,6 +36,7 @@ namespace Api
             services.AddControllers(cfg =>
             {
                 cfg.Filters.Add(new Api.Filters.ValidateModelAttribute());
+                cfg.Filters.Add(new Api.Filters.ErrorHandlerAttribute(logger));
             });
 
             services.AddTransient<ReactiveDb.IDatabase>((svc) =>
