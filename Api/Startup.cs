@@ -7,6 +7,7 @@ using Microsoft.Extensions.Hosting;
 using Repositories;
 using AutoMapper;
 using Entities;
+using Serilog;
 
 namespace Api
 {
@@ -26,10 +27,17 @@ namespace Api
             string connString = ConfigurationExtensions.GetConnectionString(this.Configuration, "Default");
             string clientApp = Configuration["ClientAddress"];
 
+            ILogger logger = new LoggerConfiguration()
+                .ReadFrom.Configuration(this.Configuration)
+                .CreateLogger();
+
+            services.AddSingleton<ILogger>(logger);
+
             services.AddControllers(cfg =>
             {
                 cfg.Filters.Add(new Api.Filters.ValidateModelAttribute());
             });
+
             services.AddTransient<ReactiveDb.IDatabase>((svc) =>
             {
                 return new ReactiveDb.Database(connString);

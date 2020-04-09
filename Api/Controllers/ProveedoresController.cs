@@ -3,6 +3,7 @@ using Entities;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Routing;
 using Repositories;
+using Serilog;
 
 namespace Api.Controllers
 {
@@ -12,9 +13,10 @@ namespace Api.Controllers
     {
         public ProveedoresController
         (
+            ILogger logger,
             IBaseRepo<Proveedor> repo,
             IMapper mapper,
-            LinkGenerator linkGen) : base(repo, mapper, linkGen)
+            LinkGenerator linkGen) : base(logger, repo, mapper, linkGen)
         {
         }
     }
