@@ -8,6 +8,7 @@ using Repositories;
 using AutoMapper;
 using Entities;
 using Serilog;
+using Ro.Npgsql.Data;
 
 namespace Api
 {
@@ -39,9 +40,9 @@ namespace Api
                 cfg.Filters.Add(new Api.Filters.ErrorHandlerAttribute(logger));
             });
 
-            services.AddTransient<ReactiveDb.IDatabase>((svc) =>
+            services.AddTransient<IDbAsync>((svc) =>
             {
-                return new ReactiveDb.Database(connString);
+                return new Database(connString);
             });
             services.AddCors(options =>
             {

@@ -1,15 +1,16 @@
 using System;
+using System.Threading.Tasks;
 using Entities;
 
 namespace Repositories
 {
     public interface ISubtableBaseRepo<T>
     {
-        IObservable<T> Get(Guid id);
-        IObservable<T> Get(Int64 id);
-        IObservable<Resultset<T>> Search(SearchData entity, Guid parent);
-        IObservable<int> Delete(Guid id);
-        IObservable<int> Update(T entity);
-        IObservable<int> Save(T entity);
+        Task<T> Get(Guid id);
+        Task<T> Get(Int64 id);
+        Task<Resultset<T>> Search(SearchData entity, Guid parent);
+        Task<int> Delete(Guid id);
+        Task<int> Update(T entity);
+        Task<int> Save(T entity);
     }
 }

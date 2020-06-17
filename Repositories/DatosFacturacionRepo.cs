@@ -2,14 +2,14 @@ using System;
 using System.Collections.Generic;
 using System.Data;
 using Entities;
-using ReactiveDb;
+using Ro.Npgsql.Data;
 
 namespace Repositories
 {
 
     public class DatosFacturacionRepo : BaseRepo<DatosFacturacion>, IBaseRepo<DatosFacturacion>
     {
-        public DatosFacturacionRepo(IDatabase db) : base(db)
+        public DatosFacturacionRepo(IDbAsync db) : base(db)
         {
 
         }

@@ -2,14 +2,14 @@ using System;
 using System.Collections.Generic;
 using System.Data;
 using Entities;
-using ReactiveDb;
+using Ro.Npgsql.Data;
 
 namespace Repositories
 {
 
     public class MaterialesRepo : BaseRepo<Material>, IBaseRepo<Material>
     {
-        public MaterialesRepo(IDatabase db) : base(db)
+        public MaterialesRepo(IDbAsync db) : base(db)
         {
 
         }

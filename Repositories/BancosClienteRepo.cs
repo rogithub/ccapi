@@ -1,13 +1,13 @@
 ﻿using System.Collections.Generic;
 using System.Data;
 using Entities;
-using ReactiveDb;
+using Ro.Npgsql.Data;
 
 namespace Repositories
 {
     public class BancosClienteRepo : SubtableBaseRepo<BancosCliente>, ISubtableBaseRepo<BancosCliente>
     {
-        public BancosClienteRepo(IDatabase db) : base(db)
+        public BancosClienteRepo(IDbAsync db) : base(db)
         {
         }
         protected override string GetByGuidSql =>

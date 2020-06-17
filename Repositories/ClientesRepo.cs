@@ -2,13 +2,13 @@
 using System.Collections.Generic;
 using System.Data;
 using Entities;
-using ReactiveDb;
+using Ro.Npgsql.Data;
 
 namespace Repositories
 {
     public class ClientesRepo : BaseRepo<Cliente>, IBaseRepo<Cliente>
     {
-        public ClientesRepo(IDatabase db) : base(db)
+        public ClientesRepo(IDbAsync db) : base(db)
         {
 
         }

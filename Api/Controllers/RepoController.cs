@@ -1,7 +1,6 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Reactive.Linq;
 using System.Threading.Tasks;
 using AutoMapper;
 using Entities;
@@ -40,7 +39,7 @@ namespace Api.Controllers
         [Route("get/{id}")]
         public async Task<ActionResult<TModel>> Get(Guid id)
         {
-            var entity = await Repo.Get(id).FirstOrDefaultAsync();
+            var entity = await Repo.Get(id);
             if (entity == null) return NotFound();
 
             return Mapper.Map<TModel>(entity);
@@ -50,7 +49,7 @@ namespace Api.Controllers
         [Route("getFolio/{id}")]
         public async Task<ActionResult<TModel>> GetFolio(int id)
         {
-            var entity = await Repo.Get(id).FirstOrDefaultAsync();
+            var entity = await Repo.Get(id);
             if (entity == null) return NotFound();
 
             return Mapper.Map<TModel>(entity);
@@ -80,7 +79,7 @@ namespace Api.Controllers
         [HttpPost()]
         public async Task<ActionResult<TModel>> Post(TModel model)
         {
-            var entity = await Repo.Get(model.Guid).FirstOrDefaultAsync();
+            var entity = await Repo.Get(model.Guid);
             if (entity != null) return BadRequest("Already exists!");
             model.Id = 0;
 
@@ -98,7 +97,7 @@ namespace Api.Controllers
         [HttpPut()]
         public async Task<ActionResult<int>> Put(TModel model)
         {
-            var entity = await Repo.Get(model.Guid).FirstOrDefaultAsync();
+            var entity = await Repo.Get(model.Guid);
             if (entity == null) return NotFound();
 
             var item = Mapper.Map<TModel, TEntity>(model);
@@ -115,7 +114,7 @@ namespace Api.Controllers
         [Route("delete/{id}")]
         public async Task<ActionResult<int>> Delete(Guid id)
         {
-            var item = await Repo.Get(id).FirstOrDefaultAsync();
+            var item = await Repo.Get(id);
             if (item == null) return NotFound();
 
             var affectedRows = await Repo.Delete(id);
